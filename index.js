@@ -7,7 +7,7 @@ const questionsAboutManager = () => {
     return inquirer.prompt([
     {
         type: 'input',
-        name: 'manager-name',
+        name: 'managerName',
         message: "What is the team manager's name? (Required)",
         // force user to input name or enter loop re-asking question
         validate: nameInput => {
@@ -21,7 +21,7 @@ const questionsAboutManager = () => {
       },
       {
         type: 'input',
-        name: 'manager-id',
+        name: 'managerId',
         message: "What is the team manager's id? (Required)",
         // force user to input id or enter loop re-asking question
         validate: idInput => {
@@ -35,7 +35,7 @@ const questionsAboutManager = () => {
       },
       {
         type: 'input',
-        name: 'manager-email',
+        name: 'managerEmail',
         message: "What is the team manager's email address? (Required)",
         // force user to input email or enter loop re-asking question
         validate: emailInput => {
@@ -49,7 +49,7 @@ const questionsAboutManager = () => {
       },
       {
         type: 'input',
-        name: 'manager-office-number',
+        name: 'managerOfficeNumber',
         message: "What is the team manager's office number? (Required)",
         // force user to input office number or enter loop re-asking question
         validate: officeNumberInput => {
@@ -79,61 +79,180 @@ Add a New Team Member
     return inquirer
         .prompt([
             {
-                type: 'input',
-                name: 'name',
-                message: 'What is the name of your project? (Required)',
-                validate: nameInput => {
-                    if (nameInput) {
-                        return true;
-                    } 
-                    else {
-                        console.log('You need to enter a project name!');
-                        return false;
-                    }
-                }
-            },
-            {
-                type: 'input',
-                name: 'description',
-                message: 'Provide a description of the project (Required)',
-                validate: descriptionInput => {
-                    if (descriptionInput) {
-                        return true;
-                    } 
-                    else {
-                        console.log('You need to enter a project description!');
-                        return false;
-                    }
-                }
-            },
-            {
-                type: 'input',
-                name: 'link',
-                message: 'Enter the GitHub link to your project. (Required)',
-                validate: linkInput => {
-                    if (linkInput) {
-                        return true;
-                    } else {
-                        console.log('You need to enter a project GitHub link!');
-                        return false;
-                    }
-                }
-            },
-            {
-            type: 'confirm',
-            name: 'confirmAddMember',
-            message: 'Would you like to add another team member?',
-            default: false
+                type: 'list',
+                name: 'memberType',
+                message: 'Which type of team member would you like to add? (Required)',
+                choices: ['Intern', 'Engineer']
             }
         ])
-        .then(teamData => {
-            teamData.info.push(teamData);
-            if (teamData.confirmAddMember) {
-            return questionsAboutTeam(teamData);
-            } else {
-            return teamData;
+        .then(responses => {
+            if (responses.memberType === "Intern"){
+                return inquirer
+                    .prompt([
+                        {
+                            type: 'input',
+                            name: 'internName',
+                            message: 'What is the name of the intern? (Required)',
+                            validate: nameInput => {
+                                if (nameInput) {
+                                    return true;
+                                } 
+                                else {
+                                    console.log('You need to enter a name for the intern!');
+                                    return false;
+                                }
+                            }
+                        },
+                        {
+                            type: 'input',
+                            name: 'internId',
+                            message: 'What is the id of the intern? (Required)',
+                            validate: idInput => {
+                                if (idInput) {
+                                    return true;
+                                } 
+                                else {
+                                    console.log('You need to enter an id for the intern!');
+                                    return false;
+                                }
+                            }
+                        },
+                        {
+                            type: 'input',
+                            name: 'internEmail',
+                            message: 'What is the email address of the intern? (Required)',
+                            validate: emailInput => {
+                                if (emailInput) {
+                                    return true;
+                                } 
+                                else {
+                                    console.log('You need to enter an email address for the intern!');
+                                    return false;
+                                }
+                            }
+                        },
+                        {
+                            type: 'input',
+                            name: 'internSchool',
+                            message: 'What school does the intern attend? (Required)',
+                            validate: schoolInput => {
+                                if (schoolInput) {
+                                    return true;
+                                } 
+                                else {
+                                    console.log("You need to enter the intern's school!");
+                                    return false;
+                                }
+                            }
+                        },
+                        {
+                            type: 'confirm',
+                            name: 'confirmAddMember',
+                            message: 'Would you like to add another team member?',
+                            default: false
+                        }
+                    ])
+                    .then(teamData => {
+                        // add the team member info to the array
+                        teamData.info.push(teamData);
+                        // if the user wants to add another member, restart the function
+                        if (teamData.confirmAddMember) {
+                            return questionsAboutTeam(teamData);
+                        } 
+                        // otherwise, end function and return the data of the array
+                        else {
+                            return teamData;
+                        }
+                    });
             }
-        });
+            else if (responses.memberType === "Engineer") {
+                return inquirer
+                    .prompt([
+                        {
+                            type: 'input',
+                            name: 'engineerName',
+                            message: 'What is the name of the engineer? (Required)',
+                            validate: nameInput => {
+                                if (nameInput) {
+                                    return true;
+                                } 
+                                else {
+                                    console.log('You need to enter a name for the intern!');
+                                    return false;
+                                }
+                            }
+                        },
+                        {
+                            type: 'input',
+                            name: 'engineerId',
+                            message: 'What is the id of the engineer? (Required)',
+                            validate: idInput => {
+                                if (idInput) {
+                                    return true;
+                                } 
+                                else {
+                                    console.log('You need to enter an id for the engineer!');
+                                    return false;
+                                }
+                            }
+                        },
+                        {
+                            type: 'input',
+                            name: 'engineerEmail',
+                            message: 'What is the email address of the engineer? (Required)',
+                            validate: emailInput => {
+                                if (emailInput) {
+                                    return true;
+                                } 
+                                else {
+                                    console.log('You need to enter an email address for the engineer!');
+                                    return false;
+                                }
+                            }
+                        },
+                        {
+                            type: 'input',
+                            name: 'engineerGithub',
+                            message: 'What is the Github username of the engineer? (Required)',
+                            validate: githubInput => {
+                                if (githubInput) {
+                                    return true;
+                                } 
+                                else {
+                                    console.log("You need to enter the engineer's github username!");
+                                    return false;
+                                }
+                            }
+                        },
+                        {
+                        type: 'confirm',
+                        name: 'confirmAddMember',
+                        message: 'Would you like to add another team member?',
+                        default: false
+                        }
+                    ])
+                    .then(teamData => {
+                        // add the team member info to the array
+                        teamData.info.push(teamData);
+                        // if the user wants to add another member, restart the function
+                        if (teamData.confirmAddMember) {
+                            return questionsAboutTeam(teamData);
+                        } 
+                        // otherwise, end function and return the data of the array
+                        else {
+                            return teamData;
+                        }
+                    });
+            }
+})
+
+
+
+            
+
+
+
+            
 };
 
 const generatePage = (name, github) => {
@@ -192,9 +311,10 @@ function writeToFile(fileName, data) {
 
 function init() {
 
-    // ask the questions
-    questions()
-        // add .then statements here
+    // ask the questions about the manager
+    questionsAboutManager()
+        // then ask the questions about the team
+        .then(questionsAboutTeam)
         // then create the html
         .then( html => {
             generatePage(html);
