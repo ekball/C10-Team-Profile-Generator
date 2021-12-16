@@ -1,5 +1,7 @@
 const inquirer = require('inquirer');
 const generatePage = require('./src/page-template');
+const fs = require('fs');
+
 
 // function to ask the user questions about their team
 const questionsAboutManager = () => {
@@ -76,6 +78,7 @@ Add a New Team Member
         teamData.info = [];
     }
 
+    // ask the user which kind of member they want to add
     return inquirer
         .prompt([
             {
@@ -86,6 +89,7 @@ Add a New Team Member
             }
         ])
         .then(responses => {
+            // if the user chooses intern, ask the intern series of questions
             if (responses.memberType === "Intern"){
                 return inquirer
                     .prompt([
@@ -152,9 +156,9 @@ Add a New Team Member
                             default: false
                         }
                     ])
-                    .then(teamData => {
+                    .then(internData => {
                         // add the team member info to the array
-                        teamData.info.push(teamData);
+                        teamData.info.push(internData);
                         // if the user wants to add another member, restart the function
                         if (teamData.confirmAddMember) {
                             return questionsAboutTeam(teamData);
@@ -165,6 +169,7 @@ Add a New Team Member
                         }
                     });
             }
+            // if the user chooses engineer, ask the engineer series of questions
             else if (responses.memberType === "Engineer") {
                 return inquirer
                     .prompt([
@@ -231,9 +236,9 @@ Add a New Team Member
                         default: false
                         }
                     ])
-                    .then(teamData => {
+                    .then(engineerData => {
                         // add the team member info to the array
-                        teamData.info.push(teamData);
+                        teamData.info.push(engineerData);
                         // if the user wants to add another member, restart the function
                         if (teamData.confirmAddMember) {
                             return questionsAboutTeam(teamData);
@@ -244,70 +249,46 @@ Add a New Team Member
                         }
                     });
             }
-})
-
-
-
-            
-
-
-
-            
+        })   
 };
 
-const generatePage = (name, github) => {
-    return `
-    <!DOCTYPE html> 
-    <html lang="en"> 
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>Team Generator</title>
-    </head>
-  
-    <body>
-        <header>
-            <h1>My Team</h1>
-        </header>
-
-        <section>
-            <h2>Member 1</h2>
-
-            <h2>Member 2</h2>
-
-            <h2>Member 3</h2>
-
-            <h2>Member 4</h2>
-
-            <h2>Member 5</h2>
-        </section>
-
-    </body>
-    </html>
-    `;
-  };
-
-// write new file in a specified folder using the data from the questions
-function writeToFile(fileName, data) {
-
+// writing HTML file
+const writeHtml = fileContent => {
     return new Promise((resolve, reject) => {
-
-        fs.writeFile(fileName, data, err => {
-            // if something goes wrong, let the user know with an error statement
-            if (err) {
-                reject(err);
-                return;
-            }
-            
-            // if successful, print success statement
-            resolve({
-                ok: true,
-                message: 'HTML file created!'
-            });
+      fs.writeFile('./dist/index.html', fileContent, err => {
+        if (err) {
+          reject(err);
+          return;
+        }
+  
+        resolve({
+          ok: true,
+          message: 'File created!'
         });
+      });
     });
   };
+
+// // write new file in a specified folder using the data from the questions
+// function writeToFile(fileName, data) {
+
+//     return new Promise((resolve, reject) => {
+
+//         fs.writeFile(fileName, data, err => {
+//             // if something goes wrong, let the user know with an error statement
+//             if (err) {
+//                 reject(err);
+//                 return;
+//             }
+            
+//             // if successful, print success statement
+//             resolve({
+//                 ok: true,
+//                 message: 'HTML file created!'
+//             });
+//         });
+//     });
+// };
 
 function init() {
 
@@ -316,23 +297,21 @@ function init() {
         // then ask the questions about the team
         .then(questionsAboutTeam)
         // then create the html
-        .then( html => {
+        .then(html => {
             generatePage(html);
         })
-        // then create the css
-        .then( css => {
-            generatePage(css);
-        })
         // then write the html file into the dist/ folder
-        .then(writeHtml => {
-            return writeToFile('./dist/index.html', writeHtml);
+        .then(writeHtmlFile => {
+            return writeHtml(generatePage(), writeHtmlFile);
         })
-        // then write the css file into the dist/ folder
-        .then(writeCss => {
-            return writeToFile('./dist/style.css', writeCss);
-        })
+        // .then(writeHtml => {
+        //     return writeToFile('./dist/index.html', writeHtml);
+        // })
+
         // if something goes wrong, let user know with error statement
         .catch(err => {
             console.log(err);
         });
 }
+
+init();
