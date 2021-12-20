@@ -6,6 +6,7 @@ const intern = require('./lib/Intern.js');
 const engineer = require('./lib/Engineer.js');
 const Intern = require('./lib/Intern.js');
 const Engineer = require('./lib/Engineer.js');
+const Manager = require('./lib/Manager.js');
 
 
 // function to ask the user questions about their team
@@ -287,6 +288,58 @@ const questionsAboutEngineer = engineerData => {
         });
 }
 
+const createObjects = members => {
+
+    // create a new manager object with answers from questions
+    const manager = new Manager
+        (
+            members.name,
+            members.id, 
+            members.email, 
+            members.officeNumber
+        );
+
+    // create array to hold multiple interns
+    const internArray = [];
+
+    // if there is data in the 'internData' array
+    if (members.info.internData){
+
+        // create a new intern object with answers from questions
+            // then loop through until end of array is reached
+        for ( i = 0; i<members.info.internData.length; i++ ){
+            const intern = new Intern
+                (
+                    members.info[i].internData.name,
+                    members.info[i].internData.id,
+                    members.info[i].internData.email,
+                    members.info[i].internData.school,
+                );
+            internArray.push(intern);
+        }
+    }
+
+    // create array to hold multiple engineers
+    const internArray = [];
+
+    // if there is data in the 'engineerData' array
+    if (members.info.engineerData){
+        
+        // create a new intern object with answers from questions
+            // then loop through until end of array is reached
+        for ( i = 0; i<members.info.internData.length; i++ ){
+            const engineer = new Engineer
+                (
+                    members.info[i].engineerData.name,
+                    members.info[i].engineerData.id,
+                    members.info[i].engineerData.email,
+                    members.info[i].engineerData.school,
+                );
+            internArray.push(engineer);
+        }
+    }
+}
+
 // writing HTML file
 const writeHtml = fileContent => {
     return new Promise((resolve, reject) => {
@@ -309,35 +362,14 @@ const writeHtml = fileContent => {
     });
 };
 
-// // write new file in a specified folder using the data from the questions
-// function writeToFile(fileName, data) {
-
-//     return new Promise((resolve, reject) => {
-
-//         fs.writeFile(fileName, data, err => {
-//             // if something goes wrong, let the user know with an error statement
-//             if (err) {
-//                 reject(err);
-//                 return;
-//             }
-            
-//             // if successful, print success statement
-//             resolve({
-//                 ok: true,
-//                 message: 'HTML file created!'
-//             });
-//         });
-//     });
-// };
-
-
-
 function init() {
 
     // ask the questions about the manager
     questionsAboutManager()
         // then ask the questions about the team
-        .then(questionsAboutTeam)
+        .then(questionsAboutTeam())
+        // then create objects out of the answers from the questions
+        .then(createObjects())
         // then create the html
         .then(html => {
             generatePage(html);
