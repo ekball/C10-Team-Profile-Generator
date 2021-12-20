@@ -1,12 +1,9 @@
 const inquirer = require('inquirer');
 const generatePage = require('./src/page-template');
 const fs = require('fs');
-const manager = require('./lib/Manager.js');
-const intern = require('./lib/Intern.js');
-const engineer = require('./lib/Engineer.js');
-const Intern = require('./lib/Intern.js');
-const Engineer = require('./lib/Engineer.js');
-const Manager = require('./lib/Manager.js');
+const Intern = require('./lib/Intern');
+const Engineer = require('./lib/Engineer');
+const Manager = require('./lib/Manager');
 
 
 // function to ask the user questions about their team
@@ -320,7 +317,7 @@ const createObjects = members => {
     }
 
     // create array to hold multiple engineers
-    const internArray = [];
+    const engineerArray = [];
 
     // if there is data in the 'engineerData' array
     if (members.info.engineerData){
@@ -335,7 +332,7 @@ const createObjects = members => {
                     members.info[i].engineerData.email,
                     members.info[i].engineerData.school,
                 );
-            internArray.push(engineer);
+            engineerArray.push(engineer);
         }
     }
 }

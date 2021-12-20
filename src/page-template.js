@@ -1,74 +1,91 @@
-const generateIntern = internInfo => {
+const Intern = require('../lib/Intern.js');
+const Engineer = require('../lib/Engineer.js');
+const Manager = require('../lib/Manager.js');
 
+// function to generate an HTML section for intern
+const generateIntern = (internInfo) => {
+
+    // if there are no interns, return empty string
     if (!internInfo){
         return '';
     }
 
+    // otherwise, create an HTML section for each of the interns
+    internInfo.forEach(intern => {
+
     return `
       <section>
-        <h2 class="name" >Name: ${member.internName}</h2>
-        <h2 class="title" >Name</h2>
+        <h2 class="name" >Name: ${intern.getName()}</h2>
+        <h2 class="title" >${intern.getRole()}</h2>
 
             <div>
 
-                <h2 class="id" >ID: ${member.internId}</h2>
+                <h2 class="id" >ID: ${intern.getId()}</h2>
 
-                <h2 class="email" >Email: ${member.internEmail}</h2>
+                <h2 class="email" >Email: ${intern.getEmail()}</h2>
                 
-                <h2 class="school" >School: ${member.internSchool}</h2>
+                <h2 class="school" >School: ${intern.getSchool()}</h2>
 
             </div>
 
         </section>    
 
     `;
+    })
+    .join('');
+
 };
 
-const generateEngineer = engineerInfo => {
+// function to generate an HTML section for engineer
+const generateEngineer = (engineerInfo) => {
 
+    // if there are no engineers, return empty string
     if (!engineerInfo){
         return '';
     }
 
+    // otherwise, create an HTML section for each of the interns
+    engineerInfo.forEach(engineer => {
+
     return `
       <section>
-        <h2 class="name" >Name: ${member.engineerName}</h2>
-        <h2 class="title" >Name</h2>
+        <h2 class="name" >Name: ${engineer.getName()}</h2>
+        <h2 class="title" >${engineer.getRole()}</h2>
 
             <div>
 
-                <h2 class="id" >ID: ${member.engineerId}</h2>
+                <h2 class="id" >ID: ${engineer.getId()}</h2>
 
-                <h2 class="email" >Email: ${member.engineerEmail}</h2>
+                <h2 class="email" >Email: ${engineer.getEmail()}</h2>
                 
-                <h2 class="school" >School: ${member.engineerGithub}</h2>
+                <h2 class="school" >School: ${engineer.getGithub()}</h2>
 
             </div>
 
         </section>    
-  
+
     `;
+    })
+    .join('');
+
 };
 
-const generateManager = () => {
-
-    // if (!managerInfo){
-    //     return '';
-    // }
+// function to generate an HTML section for manager
+const generateManager = (managerInfo) => {
 
     return `
       <section>
 
-        <h2 class="name">${managerName}</h2>
-        <h2 class="title">Manager</h2>
+        <h2 class="name">${Manager.getName()}</h2>
+        <h2 class="title">${Manager.getRole()}</h2>
             
             <div>
 
-                <h3 class="id" >ID: ${managerId}</h2>
+                <h3 class="id" >ID: ${Manager.getId()}</h2>
 
-                <h3 class="email" >Email: ${managerEmail}</h2>
+                <h3 class="email" >Email: ${Manager.getEmail()}</h2>
                 
-                <h3 class="office" >Office Number: ${managerOfficeNumber}</h2>
+                <h3 class="office" >Office Number: ${Manager.getOfficeNumber()}</h2>
 
             </div>
 
