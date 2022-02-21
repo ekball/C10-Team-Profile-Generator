@@ -1,27 +1,28 @@
 const inquirer = require('inquirer');
-const generatePage = require('./src/page-template');
 const fs = require('fs');
 const Intern = require('./lib/Intern');
 const Engineer = require('./lib/Engineer');
 const Manager = require('./lib/Manager');
+const { rejects } = require('assert');
 
 
 // function to ask the user questions about their team
-const questionsAboutManager = () => {
+const questionsAboutManager = manager => {
 
-    return inquirer.prompt([
+    return inquirer
+        .prompt([
         {
             type: 'input',
             name: 'name',
             message: "What is the team manager's name? (Required)",
             // force user to input name or enter loop re-asking question
             validate: nameInput => {
-            if (nameInput) {
-                return true;
-            } else {
-                console.log('Please enter the name of the team manager!');
-                return false;
-            }
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log('Please enter the name of the team manager!');
+                    return false;
+                }
             }
         },
         {
@@ -30,12 +31,12 @@ const questionsAboutManager = () => {
             message: "What is the team manager's id? (Required)",
             // force user to input id or enter loop re-asking question
             validate: idInput => {
-            if (idInput) {
-                return true;
-            } else {
-                console.log('Please enter the id of the team manager!');
-                return false;
-            }
+                if (idInput) {
+                    return true;
+                } else {
+                    console.log('Please enter the id of the team manager!');
+                    return false;
+                }
             }
         },
         {
@@ -44,12 +45,12 @@ const questionsAboutManager = () => {
             message: "What is the team manager's email address? (Required)",
             // force user to input email or enter loop re-asking question
             validate: emailInput => {
-            if (emailInput) {
-                return true;
-            } else {
-                console.log('Please enter the email address of the team manager!');
-                return false;
-            }
+                if (emailInput) {
+                    return true;
+                } else {
+                    console.log('Please enter the email address of the team manager!');
+                    return false;
+                }
             }
         },
         {
@@ -58,15 +59,18 @@ const questionsAboutManager = () => {
             message: "What is the team manager's office number? (Required)",
             // force user to input office number or enter loop re-asking question
             validate: officeNumberInput => {
-            if (officeNumberInput) {
-                return true;
-            } else {
-                console.log('Please enter the office number of the team manager!');
-                return false;
+                if (officeNumberInput) {
+                    return true;
+                } else {
+                    console.log('Please enter the office number of the team manager!');
+                    return false;
             }
             }
         }
-    ])
+        ])
+        .then(info => {
+            questionsAboutTeam(info);
+        })
 };
 
 const questionsAboutTeam = member => {
@@ -87,20 +91,21 @@ Add a New Team Member
             {
                 type: 'list',
                 name: 'memberType',
-                message: 'Which type of team member would you like to add? (Required)',
-                choices: ['Intern', 'Engineer']
+                message: 'Which type of team member would you like to add? Or would you like to stop adding members? (Required)',
+                choices: ['Intern', 'Engineer', 'Finished adding']
             }
         ])
         .then(response => {
             // if the user chooses intern, ask the intern series of questions, then push the newly created member to the member array
             if (response.memberType === "Intern"){
                 questionsAboutIntern(member);
-                // member.info.push(member);
             }
             // if the user chooses engineer, ask the engineer series of questions, then push the newly created member to the member array
             else if (response.memberType === "Engineer") {
                 questionsAboutEngineer(member);
-                // member.info.push(member);
+            }
+            else {
+                createObjects(member);
             }
         })
 };
@@ -108,8 +113,8 @@ Add a New Team Member
 const questionsAboutIntern = internData => {
 
     // if there is no intern data, create an array to hold more than one instance of the data entered from the questions
-    if (!member.info.internData) {
-        member.info.internData = [];
+    if (!internData.info) {
+        internData.info = [];
     }
 
     return inquirer
@@ -179,14 +184,11 @@ const questionsAboutIntern = internData => {
         ])
         .then(newInternData => {
             // add the team member info to the array
-            internData.push(newInternData);
-
-            // create a new intern object using the current responses to the questions
-            const intern = new Intern(internData);
+            internData.info.push(newInternData);
 
             // if the user wants to add another member, restart the function
             if (newInternData.confirmAddMember) {
-                return questionsAboutTeam(intern);
+                return questionsAboutTeam(internData);
             } 
             // otherwise, end function and return the data of the array
             else {
@@ -198,8 +200,8 @@ const questionsAboutIntern = internData => {
 const questionsAboutEngineer = engineerData => {
 
     // if there is no team data, create an array to hold more than one instance of the data entered from the questions
-    if (!member.info.engineerData) {
-        member.info.engineerData = [];
+    if (!engineerData.info) {
+        engineerData.info = [];
     }
 
     return inquirer
@@ -269,14 +271,11 @@ const questionsAboutEngineer = engineerData => {
         ])
         .then(newEngineerData => {
             // add the team member info to the array
-            engineerData.push(newEngineerData);
-
-            // create a new engineer object using the current responses to the questions
-            const engineer = new Engineer(engineerData);
+            engineerData.info.push(newEngineerData);
 
             // if the user wants to add another member, restart the function
             if (newEngineerData.confirmAddMember) {
-                return questionsAboutTeam(engineer);
+                return questionsAboutTeam(engineerData);
             } 
             // otherwise, end function and return the data of the array
             else {
@@ -335,50 +334,163 @@ const createObjects = members => {
             engineerArray.push(engineer);
         }
     }
-}
 
-// writing HTML file
-const writeHtml = fileContent => {
-    return new Promise((resolve, reject) => {
-
-        // write new file in a specified folder using the data from the questions
-        fs.writeFile('./dist/index.html', fileContent, err => {
-            // if something goes wrong, let the user know with an error statement
-
-            if (err) {
-                reject(err);
-                return;
-            }
+    // create html document from the objects created in members
+    const template = generatePage(manager, internArray, engineerArray);
     
-            // if successful, print success statement
+    // if html exists, writes html to /dist/index
+    if (template) {
+        fs.writeFileSync('./dist/index.html', template, err => {
+            if (err) {
+                reject(err)
+                return
+            }
+
             resolve({
-                ok: true,
-                message: 'HTML File created!'
-            });
-        });
-    });
-};
-
-function init() {
-
-    // ask the questions about the manager
-    questionsAboutManager()
-        // then ask the questions about the team
-        .then(questionsAboutTeam())
-        // then create objects out of the answers from the questions
-        .then(createObjects())
-        // then create the html
-        .then(html => {
-            generatePage(html);
+                ok: true, 
+                message: 'Succesfully created team profile!'
+            })
         })
-        // then write the html file into the dist/ folder
-        .then(writeHtmlFile => {
-            return writeHtml(generatePage(), writeHtmlFile);
-        })
-        // if something goes wrong, let user know with error statement
-        .catch(err => {
-            console.log(err);
-        });
+        console.log("Html page was created!")
+    }
 }
 
-init();
+// destructure page data by section
+// this will combine all 3 variables from the team sections into the complete doc
+function generatePage(managerInfo, engineerInfo, internInfo) {
+
+    return `
+        <!DOCTYPE html> 
+        <html lang="en"> 
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <link rel="stylesheet" href="./dist/style.css" />
+            <title>Team Generator</title>
+        </head>
+          
+        <body>
+            <header>
+                <h1 class="header">My Team</h1>
+            </header>
+        
+            <main>
+            
+                ${generateManager(managerInfo)}
+                ${generateIntern(internInfo)}
+                ${generateIntern(engineerInfo)}
+        
+            </main>
+        
+        </body>
+        </html>
+        
+            `;
+};
+        
+
+// function to generate an HTML section for intern
+const generateIntern = (internInfo) => {
+    
+    // if there are no interns, return empty string
+    if (internInfo.length>0){
+        
+    // create an HTML section for each of the interns
+            
+    // empty variable to store the created htmls
+    storeInternHtml = '';
+            
+    internInfo.forEach(intern => {
+        
+    storeEngineerHtml += `
+            <section>
+                <h2 class="name" >Name: ${intern.getName()}</h2>
+                <h2 class="title" >${intern.getRole()}</h2>
+        
+                    <div>
+        
+                        <h2 class="id" >ID: ${intern.getId()}</h2>
+        
+                        <h2 class="email" >Email: ${intern.getEmail()}</h2>
+                        
+                        <h2 class="school" >School: ${intern.getSchool()}</h2>
+        
+                    </div>
+        
+                </section>    
+        
+            `;
+        })    
+        return storeInternHtml;
+    }
+    else {
+        return '';
+    }
+};
+    
+    // function to generate an HTML section for engineer
+    const generateEngineer = (engineerInfo) => {
+    
+        // if there are engineers...
+        if (engineerInfo.length>0){
+
+            // create an HTML section for each of the engineeers
+
+            // empty variable to store the created htmls
+            storeEngineerHtml = '';
+
+            engineerInfo.forEach(engineer => {
+        
+            storeEngineerHtml += `
+            <section>
+                <h2 class="name" >Name: ${engineer.getName()}</h2>
+                <h2 class="title" >${engineer.getRole()}</h2>
+        
+                    <div>
+        
+                        <h2 class="id" >ID: ${engineer.getId()}</h2>
+        
+                        <h2 class="email" >Email: ${engineer.getEmail()}</h2>
+                        
+                        <h2 class="school" >School: ${engineer.getGithub()}</h2>
+        
+                    </div>
+        
+                </section>    
+        
+            `;
+            })    
+            return storeEngineerHtml;
+        }   
+
+        else{
+            return '';
+        }
+    };
+    
+    // function to generate an HTML section for manager
+    const generateManager = (managerInfo) => {
+    
+        return `
+          <section>
+    
+            <h2 class="name">${Manager.getName()}</h2>
+            <h2 class="title">${Manager.getRole()}</h2>
+                
+                <div>
+    
+                    <h3 class="id" >ID: ${Manager.getId()}</h2>
+    
+                    <h3 class="email" >Email: ${Manager.getEmail()}</h2>
+                    
+                    <h3 class="office" >Office Number: ${Manager.getOfficeNumber()}</h2>
+    
+                </div>
+    
+            </section>    
+    
+        `;
+    };
+
+questionsAboutManager();
