@@ -375,17 +375,21 @@ function generatePage(manager, engineers, interns) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <script src="https://kit.fontawesome.com/be05b4af6b.js" crossorigin="anonymous"></script>
-        <title>Team Profile</title>
+        <title>Team Profile Generator</title>
     </head>
     <body>
-        <header>
-            <h1>My Team</h1>
+        <header class="d-flex flex-wrap justify-content-center bg-success">
+            <h1>The Team:</h1>
         </header>
     
         <main>
-            ${generateManager(manager)}
-            ${generateEngineer(engineers)}
-            ${generateIntern(interns)}
+            <div class="d-flex flex-wrap justify-content-center">
+                ${generateManager(manager)}
+            </div>
+            <div class="d-flex flex-wrap justify-content-around">
+                ${generateEngineer(engineers)}
+                ${generateIntern(interns)}
+            </div>
         </main>
     </body>
 </html>`
@@ -395,26 +399,36 @@ function generatePage(manager, engineers, interns) {
 function generateManager(manager) {
 
     return `
-<div>
-    <div>
-        <div>
+<div class="card">
+
+    <div class="card-title bg-info">
+
+        <div class="card-body">
             ${manager.name}
         </div>
-        <div>
-            <i></i>${manager.getRole()}
+
+        <div class="card-body">
+            <i class="fas fa-mug-hot"></i>  ${manager.getRole()}
         </div>
+
     </div>
-    <div> 
-        <div> 
+
+    <div class="card-body bg-secondary"> 
+
+        <div class="card-body border-primary rounded"> 
             ID: ${manager.id}
         </div>
-        <div> 
+
+        <div class="card-body border-primary rounded"> 
             Email: <a href="mailto:${manager.email}">${manager.email}</a>
         </div>
-        <div>
+
+        <div class="card-body border-primary rounded">
             Office Number: ${manager.officeNumber}
         </div>
+
     </div>
+
 </div> 
 `
 }
@@ -432,28 +446,38 @@ function generateEngineer(engineers) {
         engineers.forEach(engineer => {
 
             storeEngineerHtml += `
-            <div>
-                <div>
-                    <div>
+            <div class="card">
+
+                <div class="card-title bg-info">
+
+                    <div class="card-body">
                         ${engineer.name}
                     </div>
-                    <div>
-                        <i></i>${engineer.getRole()}
+
+                    <div class="card-body">
+                        <i class="fas fa-glasses"></i>  ${engineer.getRole()}
                     </div>
+
                 </div>
-                <div> 
-                    <div> 
+
+                <div class="card-body bg-secondary"> 
+
+                    <div class="card-body border-primary rounded"> 
                         ID: ${engineer.id}
                     </div>
-                    <div> 
+
+                    <div class="card-body border-primary rounded"> 
                         Email: <a href="mailto:${engineer.email}">${engineer.email}</a>
                     </div>
-                    <div>
+
+                    <div class="card-body border-primary rounded">
                         GitHub: <a href="https://github.com/${engineer.github}" target="_blank">${engineer.github}</a>
                     </div>
-                </div>
-            </div> `
 
+                </div>
+
+            </div> 
+            `
         })
         return storeEngineerHtml;
     } 
@@ -474,28 +498,38 @@ function generateIntern(interns) {
         interns.forEach(intern => {
 
             storeInternHtml += `
-            <div>
-                <div>
-                    <div>
+            <div class="card">
+
+                <div class="card-title bg-info">
+
+                    <div class="card-body">
                         ${intern.name}
                     </div>
-                    <div>
-                        <i></i>${intern.getRole()}
+
+                    <div class="card-body">
+                        <i class="fas fa-user-graduate"></i>  ${intern.getRole()}
                     </div>
+
                 </div>
-                <div> 
-                    <div> 
+
+                <div class="card-body bg-secondary"> 
+
+                    <div class="card-body border-primary rounded"> 
                         ID: ${intern.id}
                     </div>
-                    <div> 
+
+                    <div class="card-body border-primary rounded"> 
                         Email: <a href="mailto:${intern.email}">${intern.email}</a>
                     </div>
-                    <div>
+
+                    <div class="card-body border-primary rounded">
                         School: ${intern.school}
                     </div>
-                </div>
-            </div> `
 
+                </div>
+
+            </div> 
+            `
         })
 
     return storeInternHtml;
