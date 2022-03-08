@@ -375,11 +375,11 @@ function generatePage(manager, engineers, interns) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <script src="https://kit.fontawesome.com/be05b4af6b.js" crossorigin="anonymous"></script>
-        <title>Team Profile</title>
+        <title>Team Profile Generator</title>
     </head>
     <body>
         <header>
-            <h1>My Team</h1>
+            <h1>Team:</h1>
         </header>
     
         <main>
@@ -395,14 +395,15 @@ function generatePage(manager, engineers, interns) {
 function generateManager(manager) {
 
     return `
-<div>
-    <div>
-        <div>
-            ${manager.name}
-        </div>
+<div class="card">
+    <div class="card-title">
         <div>
             <i></i>${manager.getRole()}
         </div>
+        <div class="card-body">
+            ${manager.name}
+        </div>
+        
     </div>
     <div> 
         <div> 
@@ -432,7 +433,7 @@ function generateEngineer(engineers) {
         engineers.forEach(engineer => {
 
             storeEngineerHtml += `
-            <div>
+            <div class="card">
                 <div>
                     <div>
                         ${engineer.name}
@@ -474,7 +475,7 @@ function generateIntern(interns) {
         interns.forEach(intern => {
 
             storeInternHtml += `
-            <div>
+            <div class="card">
                 <div>
                     <div>
                         ${intern.name}
