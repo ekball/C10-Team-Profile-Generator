@@ -16,7 +16,7 @@
 
     The repository link: https://github.com/ekball/C10-Team-Profile-Generator
 
-    The demo video link: https://drive.google.com/file/d/1jubxOwoe5ngn89YL-47zFJa9F62gVgUY/view
+    The demo video link: https://drive.google.com/file/d/1UOIDzTxJkOH5wNPHTrCjPglRluo8EbYO/view
 
 ## Demo README
 
