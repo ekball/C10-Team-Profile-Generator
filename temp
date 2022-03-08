@@ -1,9 +1,10 @@
-const inquirer = require('inquirer');
-const fs = require('fs');
-const Intern = require('./lib/Intern');
-const Engineer = require('./lib/Engineer');
-const Manager = require('./lib/Manager');
-const { rejects } = require('assert');
+const fs = require('fs')
+const inquirer = require('inquirer')
+
+const Manager = require('./lib/Manager.js')
+const Engineer = require('./lib/Engineer.js')
+const Intern = require('./lib/Intern.js')
+const { rejects } = require('assert')
 
 // function to start asking the user questions about the team
 function startQuestions() {
@@ -344,7 +345,7 @@ function createObjects(team) {
     }}   
    
     // create html document from the objects created in team
-    const template = generatePage(manager, engineerArray, internArray)
+    const html = generatePage(manager, engineerArray, internArray)
 
     // if template (html) exists, writes new html to /dist/index.html
     if (template) {
@@ -377,12 +378,12 @@ function generatePage(manager, engineers, interns) {
         <script src="https://kit.fontawesome.com/be05b4af6b.js" crossorigin="anonymous"></script>
         <title>Team Profile</title>
     </head>
-    <body>
-        <header>
-            <h1>My Team</h1>
+    <body class="col-12">
+        <header class="bg-success text-center mh-100 w-auto col-12 mb-5 p-5 row" style="--bs-bg-opacity: .5">
+            <h1 class="col-12">My Team</h1>
         </header>
     
-        <main>
+        <main class="d-flex flex-wrap justify-content-around">
             ${generateManager(manager)}
             ${generateEngineer(engineers)}
             ${generateIntern(interns)}
@@ -395,23 +396,23 @@ function generatePage(manager, engineers, interns) {
 function generateManager(manager) {
 
     return `
-<div>
-    <div>
-        <div>
+<div class="card col-3 bg-light p-0 shadow rounded m-2">
+    <div class="card-title bg-primary">
+        <div class="card-body fs-3">
             ${manager.name}
         </div>
-        <div>
-            <i></i>${manager.getRole()}
+        <div class="card-body fs-5">
+            <i class="fas fa-mug-hot"></i>${manager.getRole()}
         </div>
     </div>
-    <div> 
-        <div> 
+    <div class="card-body bg-light"> 
+        <div class="card-body"> 
             ID: ${manager.id}
         </div>
-        <div> 
+        <div class="card-body"> 
             Email: <a href="mailto:${manager.email}">${manager.email}</a>
         </div>
-        <div>
+        <div class="card-body">
             Office Number: ${manager.officeNumber}
         </div>
     </div>
@@ -432,23 +433,23 @@ function generateEngineer(engineers) {
         engineers.forEach(engineer => {
 
             storeEngineerHtml += `
-            <div>
-                <div>
-                    <div>
+            <div class="card col-3 bg-light p-0 shadow rounded m-2">
+                <div class="card-title bg-primary">
+                    <div class="card-body fs-3">
                         ${engineer.name}
                     </div>
-                    <div>
-                        <i></i>${engineer.getRole()}
+                    <div class="card-body fs-5">
+                        <i class="fas fa-glasses"></i>${engineer.getRole()}
                     </div>
                 </div>
-                <div> 
-                    <div> 
+                <div class="card-body bg-light"> 
+                    <div class="card-body"> 
                         ID: ${engineer.id}
                     </div>
-                    <div> 
+                    <div class="card-body"> 
                         Email: <a href="mailto:${engineer.email}">${engineer.email}</a>
                     </div>
-                    <div>
+                    <div class="card-body">
                         GitHub: <a href="https://github.com/${engineer.github}" target="_blank">${engineer.github}</a>
                     </div>
                 </div>
@@ -474,23 +475,23 @@ function generateIntern(interns) {
         interns.forEach(intern => {
 
             storeInternHtml += `
-            <div>
-                <div>
-                    <div>
+            <div class="card col-3 bg-light p-0 shadow rounded m-2">
+                <div class="card-title bg-primary">
+                    <div class="card-body fs-3">
                         ${intern.name}
                     </div>
-                    <div>
-                        <i></i>${intern.getRole()}
+                    <div class="card-body fs-5">
+                        <i class="fas fa-user-graduate"></i>${intern.getRole()}
                     </div>
                 </div>
-                <div> 
-                    <div> 
+                <div class="card-body bg-light"> 
+                    <div class="card-body"> 
                         ID: ${intern.id}
                     </div>
-                    <div> 
+                    <div class="card-body"> 
                         Email: <a href="mailto:${intern.email}">${intern.email}</a>
                     </div>
-                    <div>
+                    <div class="card-body">
                         School: ${intern.school}
                     </div>
                 </div>
@@ -505,4 +506,4 @@ function generateIntern(interns) {
     }
 }
 
-startQuestions();
+init()
